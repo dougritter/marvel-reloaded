@@ -1,18 +1,21 @@
 apply plugin: 'com.android.application'
-
 apply plugin: 'kotlin-android'
-
+apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 27
+    def config = rootProject.extensions.getByName("ext")
+
+    compileSdkVersion config["compile_sdk"]
+    buildToolsVersion config["build_tools"]
+
     defaultConfig {
-        applicationId "com.dougritter.marvel"
-        minSdkVersion 15
-        targetSdkVersion 27
-        versionCode 1
-        versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        applicationId config["application_id"]
+        minSdkVersion config["min_sdk"]
+        targetSdkVersion config["target_sdk"]
+        versionCode config["version_code"]
+        versionName config["version_name"]
+        testInstrumentationRunner config["test_runner"]
     }
     buildTypes {
         release {
@@ -23,11 +26,50 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'com.android.support:appcompat-v7:27.1.1'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    def applicationDependencies = rootProject.ext.mainApplication
+    def unitTestDependencies = rootProject.ext.unitTesting
+    def acceptanceTestDependencies = rootProject.ext.acceptanceTesting
+    def developmentDependencies = rootProject.ext.development
+
+    //Compile time dependencies
+    kapt applicationDependencies.archComponentsCompiler
+    kapt applicationDependencies.daggerCompiler
+    compileOnly applicationDependencies.javaxAnnotation
+    compileOnly applicationDependencies.javaxInject
+
+    //Application dependencies
+    implementation applicationDependencies.kotlin
+    implementation applicationDependencies.kotlinCoroutines
+    implementation applicationDependencies.kotlinCoroutinesAndroid
+    implementation applicationDependencies.appCompat
+    implementation applicationDependencies.constraintLayout
+    implementation applicationDependencies.archComponents
+    implementation applicationDependencies.cardView
+    implementation applicationDependencies.recyclerView
+    implementation applicationDependencies.design
+    implementation applicationDependencies.androidAnnotations
+    implementation applicationDependencies.glide
+    implementation applicationDependencies.dagger
+    implementation applicationDependencies.retrofit
+    implementation applicationDependencies.okhttpLoggingInterceptor
+
+    //Unit/Integration tests dependencies
+    testImplementation unitTestDependencies.kotlin
+    testImplementation unitTestDependencies.kotlinTest
+    testImplementation unitTestDependencies.robolectric
+    testImplementation unitTestDependencies.junit
+    testImplementation unitTestDependencies.mockito
+    testImplementation unitTestDependencies.kluent
+
+    //Acceptance tests dependencies
+    androidTestImplementation acceptanceTestDependencies.testRunner
+    androidTestImplementation acceptanceTestDependencies.testRules
+    androidTestImplementation acceptanceTestDependencies.espressoCore
+    androidTestImplementation acceptanceTestDependencies.espressoIntents
+    androidTestImplementation acceptanceTestDependencies.androidAnnotations
+
+    //Development dependencies
+    debugImplementation developmentDependencies.leakCanary
+    releaseImplementation developmentDependencies.leakCanaryNoop
+    testImplementation developmentDependencies.leakCanaryNoop
 }
