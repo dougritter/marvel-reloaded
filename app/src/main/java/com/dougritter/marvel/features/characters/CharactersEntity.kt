@@ -1,26 +1,50 @@
 package com.dougritter.marvel.features.characters
 
-data class CharactersEntity(private val data: CharacterBodyData)
+import android.os.Parcel
+import com.dougritter.marvel.core.platform.KParcelable
+import com.dougritter.marvel.core.platform.parcelableCreator
 
-data class CharacterBodyData(private val offset: Int, private val limit: Int, private val total: Int,
-                             private val count: Int, private val results: List<CharacterInfo>)
+data class CharactersEntity(val data: CharacterBodyData) {
+    fun toCharacters() = data.results
 
-data class CharacterInfo(private val id: Int, private val name: String,
-                         private val description: String, private val modified: String,
-                         private val thumbnail: Thumbnail, private val resourceURI: String,
-                         private val comics: Comics, private val series: Series,
-                         private val stories: Stories, private val events: Events,
-                         private val urls: List<Url>)
+    companion object {
+        fun empty() = CharactersEntity(CharacterBodyData(0, 0, 0, 0, emptyList()))
+    }
+}
 
-data class Thumbnail(private val path: String, private val extension: String)
+data class CharacterBodyData(val offset: Int, val limit: Int, val total: Int,
+                             val count: Int, val results: List<CharacterInfo>)
 
-data class Comics(private val available: Int, private val collectionURI: String,
-                  private val items: List<ComicsItem>, private val returned: Int)
+data class CharacterInfo(val id: Int, val name: String,
+                         val description: String, val modified: String,
+                         val thumbnail: Thumbnail, val resourceURI: String,
+                         val comics: Comics, val series: Series,
+                         val stories: Stories, val events: Events,
+                         val urls: List<Url>)
 
-data class ComicsItem(private val resourceURI: String, private val name: String)
+data class Thumbnail(val path: String, val extension: String) : KParcelable {
+    companion object {
+        @JvmField val CREATOR = parcelableCreator(
+                ::Thumbnail)
+    }
 
-data class Series(private val available: Int, private val collectionURI: String,
-                  private val items: List<SeriesItem>, private val returned: Int)
+    constructor(parcel: Parcel) : this(parcel.readString(), parcel.readString())
+
+    override fun writeToParcel(dest: Parcel, flags: Int) {
+        with(dest) {
+            writeString(path)
+            writeValue(extension)
+        }
+    }
+}
+
+data class Comics(val available: Int, val collectionURI: String,
+                  val items: List<ComicsItem>, val returned: Int)
+
+data class ComicsItem(val resourceURI: String, val name: String)
+
+data class Series(val available: Int, val collectionURI: String,
+                  val items: List<SeriesItem>, val returned: Int)
 
 data class SeriesItem(private val resourceURI: String, private val name: String)
 
