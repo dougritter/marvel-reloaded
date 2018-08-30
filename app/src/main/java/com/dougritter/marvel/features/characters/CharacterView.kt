@@ -8,8 +8,7 @@ import com.dougritter.marvel.core.platform.writeTypedObjectCompat
 
 data class CharacterView(val id: Int, val name: String, val thumbnail: Thumbnail) : KParcelable {
     companion object {
-        @JvmField val CREATOR = parcelableCreator(
-                ::CharacterView)
+        @JvmField val CREATOR = parcelableCreator(::CharacterView)
     }
 
     constructor(parcel: Parcel) : this(parcel.readInt(), parcel.readString(), parcel.readTypedObjectCompat(Thumbnail.CREATOR)!!)

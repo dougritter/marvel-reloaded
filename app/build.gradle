@@ -18,6 +18,12 @@ android {
         testInstrumentationRunner config["test_runner"]
     }
     buildTypes {
+        debug {
+            buildConfigField "String", "MARVEL_PRIVATE_KEY", MARVEL_PRIVATE_KEY
+            buildConfigField "String", "MARVEL_PUBLIC_KEY", MARVEL_PUBLIC_KEY
+        }
+
+
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'

@@ -7,10 +7,11 @@ import javax.inject.Singleton
 
 @Singleton
 class CharactersService
-@Inject constructor(retrofit: Retrofit): CharactersApi {
+@Inject constructor(private val retrofit: Retrofit): CharactersApi {
 
     private val charactersApi by lazy { retrofit.create(CharactersApi::class.java) }
 
-    override fun characters(apiKey: String): Call<CharactersEntity> = charactersApi.characters(apiKey)
+    override fun characters(apiKey: String, ts: String, hash: String) : Call<CharactersEntity>
+            = charactersApi.characters(apiKey, ts, hash)
 
 }

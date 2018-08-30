@@ -22,7 +22,7 @@ class AndroidApplication : Application() {
         this.initializeLeakDetection()
     }
 
-    fun injectMembers() = appComponent.inject(this)
+    private fun injectMembers() = appComponent.inject(this)
 
     private fun initializeLeakDetection() {
         if (BuildConfig.DEBUG) LeakCanary.install(this)

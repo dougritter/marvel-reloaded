@@ -3,6 +3,7 @@
           package="com.dougritter.marvel">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:name=".AndroidApplication"
         android:allowBackup="true"
